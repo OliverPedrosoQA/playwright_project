@@ -84,17 +84,20 @@ test.describe('Client App Tests', () => {
 
     })
     
-    test('6- Validating checkboxes and radio buttons', async ({page}) => {
+    test.only('6- Validating checkboxes and radio buttons', async ({page}) => {
         const userRadioButton = page.locator('.customradio').last();
         const termsAndConditionsCheckbox = page.getByRole('checkbox', { name: 'I Agree to the terms and'});
+        const yesButton = page.getByRole('button', { name: 'Okay' });
 
         await page.goto('https://rahulshettyacademy.com/loginpagePractise/');
-      
+        await userRadioButton.check();
+        await yesButton.click();
+        await termsAndConditionsCheckbox.check();
+
         await expect(userRadioButton).toBeChecked(); //valida se está checado
         await expect(termsAndConditionsCheckbox).toBeChecked(); //valida se está checado
         console.log(await termsAndConditionsCheckbox.isChecked()); //returns true or false
-
-    })
+    });
 
     test('7- Validating child window handling', async ({browser}) => {
         const context = await browser.newContext();
@@ -116,7 +119,7 @@ test.describe('Client App Tests', () => {
         await expect(newPageHeader).toBeVisible();
     })
 
-    test.only('8- Getting email from new page', async ({browser}) => {
+    test('8- Getting email from new page', async ({browser}) => {
         const context = await browser.newContext();
         const page = await context.newPage();
         const blinkingToasMessage = page.getByRole('link', { name: 'Free Access to InterviewQues/' });
@@ -137,7 +140,7 @@ test.describe('Client App Tests', () => {
         await expect(newPageHeader).toBeVisible();
         
         // Get the email text from the new page
-        const text = await newPage.locator('.red').textContent();
+        const text = await newPage.locator('.red').textContent(); 
         console.log("full text: " + text); 
         const splitText = text?.split("@");
         const email = splitText?.[1].split(" ")[0];
@@ -146,6 +149,11 @@ test.describe('Client App Tests', () => {
 
         await userNameTextField.fill(email!); //filling the email extracted from the new page into the username field
         console.log("user email input: ", await userNameTextField.inputValue());
+
+        // the differecen between the two:
+        // textContext() grabs the text that belongs to the DOM
+        // inputValue() grabs the text inputted in the field.
+    
     });
 
 })
